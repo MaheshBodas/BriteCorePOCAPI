@@ -121,7 +121,7 @@ REST_FRAMEWORK = {
     # 'PAGE_SIZE': 3,
 }
 
-AUTH_USER_MODEL = 'riskapi.User'
+AUTH_USER_MODEL = 'riskapi.user'
 
 AUTH_PASSWORD_VALIDATORS = [
     {

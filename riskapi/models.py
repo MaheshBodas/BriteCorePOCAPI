@@ -10,11 +10,11 @@ class RiskFieldTypeEnum(Enum):
     currency = "currency"
  """
 # Create your models here.
-class User(AbstractUser):
+class user(AbstractUser):
     None    
 
-class RiskType(models.Model):
-    createdby = models.ForeignKey(User, related_name='user_risktypes', on_delete=models.CASCADE,null=True, blank=True)
+class risktype(models.Model):
+    createdby = models.ForeignKey(user, related_name='user_risktypes', on_delete=models.CASCADE,null=True, blank=True)
     risk_type_name = models.CharField(max_length=100, unique=True,
             error_messages={
                 'unique': 'risk_type_name must be unique'
@@ -22,32 +22,32 @@ class RiskType(models.Model):
     risk_type_description = models.CharField(max_length=100, blank=True, default='')
 
     def get_RiskTypeFields(self):
-        risktypefields = RiskTypeField.objects.filter(risktype=self)        
+        risktypefields = risktypefield.objects.filter(risktype=self)        
         return risktypefields
     
 
-class RiskTypeField(models.Model):    
+class risktypefield(models.Model):    
     """ risk_type_field_name = models.CharField(max_length=100,unique=True,
             error_messages={
-                'unique': 'risk_type_field_name must be unique within and across Risk Types'
+                'unique': 'risk_type_field_name must be unique within and across risk Types'
             }) """
     risk_type_field_name = models.CharField(max_length=100)
     #risk_type_field_enum = EnumChoiceField(enum_class=RiskFieldTypeEnum , default=RiskFieldTypeEnum.text)
     risk_type_field_enum = models.CharField(max_length=10, blank=True, default='')
     risk_type_field_description = models.CharField(max_length=100, blank=True, default='')
-    risktype = models.ForeignKey(RiskType, related_name='risktype_risktypefields', on_delete=models.CASCADE,null=True, blank=True)    
+    risktype = models.ForeignKey(risktype, related_name='risktype_risktypefields', on_delete=models.CASCADE,null=True, blank=True)    
 
 
     
 
-class Risk(models.Model):
-    createdby = models.ForeignKey(User, related_name='user_risks', on_delete=models.CASCADE,null=True, blank=True)      
+class risk(models.Model):
+    createdby = models.ForeignKey(user, related_name='user_risks', on_delete=models.CASCADE,null=True, blank=True)      
     risk_name = models.CharField(max_length=100, unique=True,
             error_messages={
                 'unique': 'risk_name must be unique'
             })
     risk_description = models.CharField(max_length=100, blank=True, default='')    
-    risktype = models.ForeignKey(RiskType,on_delete=models.CASCADE,null=True, blank=True)
+    risktype = models.ForeignKey(risktype,on_delete=models.CASCADE,null=True, blank=True)
     @property
     def risk_type_id(self):
         self.risktype.id
@@ -55,12 +55,12 @@ class Risk(models.Model):
     def risk_type_name(self):
         self.risktype.risk_type_name
 
-class RiskField(models.Model):
+class riskfield(models.Model):
     risk_field_value = models.CharField(max_length=100, blank=True, default='')  
-    # Field is of type RiskTypeField    
+    # Field is of type risktypefield    
     
-    risktypefield = models.ForeignKey(RiskTypeField,on_delete=models.CASCADE,null=True, blank=True)
-    risk = models.ForeignKey(Risk, related_name='risk_riskfields', on_delete=models.CASCADE,null=True, blank=True)
+    risktypefield = models.ForeignKey(risktypefield,on_delete=models.CASCADE,null=True, blank=True)
+    risk = models.ForeignKey(risk, related_name='risk_riskfields', on_delete=models.CASCADE,null=True, blank=True)
 
 
     #   

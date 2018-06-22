@@ -3,10 +3,10 @@ from .models import *
 from .utils import *
 from .validators import *
 
-# Serializer type for User DRF authentication
+# Serializer type for user DRF authentication
 class UserSerializer(serializers.ModelSerializer):    
     class Meta:
-        model = User
+        model = user
         fields = ('password', 'username', 'email','is_staff', 'is_superuser', 'is_active', 'date_joined',)
         write_only_fields = ('password',)
         read_only_fields = ('is_staff', 'is_superuser', 'is_active', 'date_joined',)
@@ -17,23 +17,23 @@ class UserSerializer(serializers.ModelSerializer):
         )
         extra_kwargs = {field: {'required': True} for field in required_fields}
 
-# Serializer type used for Lookups in select RiskType list in UI
+# Serializer type used for Lookups in select risktype list in UI
 class RiskTypeKeySerializer(serializers.ModelSerializer):
     class Meta:
-        model =  RiskType               
+        model =  risktype               
         fields = ('id', 'risk_type_name')        
 
-# Serializer type used for Lookups in select Risk list in UI
+# Serializer type used for Lookups in select risk list in UI
 class RiskKeySerializer(serializers.ModelSerializer):
     class Meta:
-        model =  Risk               
+        model =  risk               
         fields = ('id', 'risk_name')
 
-# Serializer type used for RiskTypeField nested in RiskType
+# Serializer type used for risktypefield nested in risktype
 class RiskTypeFieldSerializer(serializers.ModelSerializer):    
     class Meta:
-        model = RiskTypeField
-        # Have field for parent type RiskType name it risktype        
+        model = risktypefield
+        # Have field for parent type risktype name it risktype        
         fields = ('id','risktype','risk_type_field_name', 'risk_type_field_enum', 'risk_type_field_description')
         # Explicitly mark required fields
         required_fields = (            
@@ -42,13 +42,13 @@ class RiskTypeFieldSerializer(serializers.ModelSerializer):
         )
         extra_kwargs = {field: {'required': True} for field in required_fields}
 
-# Serializer type used for RiskType
+# Serializer type used for risktype
 class RiskTypeSerializer(serializers.ModelSerializer):
     createdby = serializers.ReadOnlyField(source='createdby.username')
     risktype_risktypefields = RiskTypeFieldSerializer(many=True)
 
     class Meta:
-        model =  RiskType               
+        model =  risktype               
         fields = ('id', 'risk_type_name', 'risk_type_description' ,'risktype_risktypefields', 'createdby')        
 
     # Explicitly mark required fields
@@ -71,19 +71,19 @@ class RiskTypeSerializer(serializers.ModelSerializer):
         print(validated_data)                
         risktypefields_data = validated_data.pop('risktype_risktypefields')
 
-        risktypeobj = RiskType.objects.create(**validated_data)
+        risktypeobj = risktype.objects.create(**validated_data)
         for risktypefield_data in risktypefields_data:
-            RiskTypeField.objects.create(risktype=risktypeobj, **risktypefield_data)
+            risktypefield.objects.create(risktype=risktypeobj, **risktypefield_data)
         return risktypeobj
 
     #
     def validate(self, attrs):                
         strCombinedErrorMessage = None
-        print("I am calling RiskType Validate")            
+        print("I am calling risktype Validate")            
         risktype_risktypefields_data = attrs['risktype_risktypefields']
         print(risktype_risktypefields_data)
         #strCombinedErrorMessage = ValidationUtils.Find_RiskTypeFields_Duplicates(risktype_risktypefields_data)            
-        strCombinedErrorMessage = ValidationUtils.Find_Duplicates(risktype_risktypefields_data,'risk_type_field_name','RiskType',False)            
+        strCombinedErrorMessage = ValidationUtils.Find_Duplicates(risktype_risktypefields_data,'risk_type_field_name','risktype',False)            
         if strCombinedErrorMessage is None:            
             return attrs
         else:
@@ -91,7 +91,7 @@ class RiskTypeSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(strCombinedErrorMessage) 
     #
 
-# Serializer type used for RiskField nested in Risk
+# Serializer type used for riskfield nested in risk
 class RiskFieldSerializer(serializers.ModelSerializer):
     #
     #risk_type_field_id = serializers.ReadOnlyField(source='risk_type_field.id')
@@ -99,7 +99,7 @@ class RiskFieldSerializer(serializers.ModelSerializer):
     risk_type_field_enum = serializers.ReadOnlyField(source='risktypefield.risk_type_field_enum')
     risk_field_value = serializers.CharField(required=True)
     class Meta:
-        model = RiskField
+        model = riskfield
         fields = ('id','risktypefield','risk','risk_type_field_name','risk_type_field_enum', 'risk_field_value')
 
         # Explicitly mark required fields
@@ -116,21 +116,21 @@ class RiskFieldSerializer(serializers.ModelSerializer):
             risktypefield_qryobj = validated_data.pop('risktypefield')
             print(risktypefield_qryobj.pk)            
             risk_type_field_id = risktypefield_qryobj.pk
-            qFilterSet = RiskTypeField.objects.filter(risktype__pk =riskobj.risk_type_id,id=risk_type_field_id)
-            #qFilterSet = RiskTypeField.objects.filter(risktype__pk =1,id=risk_type_field_id)
+            qFilterSet = risktypefield.objects.filter(risktype__pk =riskobj.risk_type_id,id=risk_type_field_id)
+            #qFilterSet = risktypefield.objects.filter(risktype__pk =1,id=risk_type_field_id)
             print('qFilterSet count()')
             print(qFilterSet.count())
             #risk_type_field_obj = qFilterSet.get(id=risk_type_field_id)    
             self.risktypefield = qFilterSet.get(id=risk_type_field_id)    
 
-# Serializer type used for Risk        
+# Serializer type used for risk        
 class RiskSerializer(serializers.ModelSerializer):
     createdby = serializers.ReadOnlyField(source='createdby.username')
     risk_riskfields = RiskFieldSerializer(many=True)
     risk_type_name = serializers.ReadOnlyField(source='risktype.risk_type_name')        
     
     class Meta:
-        model =  Risk        
+        model =  risk        
         fields = ('id','risktype','risk_type_name','risk_name', 'risk_description','risk_riskfields', 'createdby')
         # Explicitly mark required fields
         required_fields = (
@@ -164,16 +164,16 @@ class RiskSerializer(serializers.ModelSerializer):
         #print(risktype_qryobj)     
         risk_type_id = risktype_qryobj.pk
         #
-        risk_type_obj = RiskType.objects.get(pk=risk_type_id)
-        riskobj = Risk.objects.create(risktype=risk_type_obj,**validated_data)
-        #risk_type_field_obj = RiskTypeField.objects.get(pk=1)      
+        risk_type_obj = risktype.objects.get(pk=risk_type_id)
+        riskobj = risk.objects.create(risktype=risk_type_obj,**validated_data)
+        #risk_type_field_obj = risktypefield.objects.get(pk=1)      
         for riskfield_data in riskfields_data:
             print('Writing riskfield_data')
             print(riskfield_data)
             #risk_type_field_obj.risktype = risk_type_id
-            RiskField.objects.create(risk=riskobj,**riskfield_data)
-            #RiskField.objects.create(risk=riskobj,risktypefield=risk_type_field_obj,**riskfield_data)
-            #RiskField.objects.create(Risk=riskobj,**riskfield_data)
+            riskfield.objects.create(risk=riskobj,**riskfield_data)
+            #riskfield.objects.create(risk=riskobj,risktypefield=risk_type_field_obj,**riskfield_data)
+            #riskfield.objects.create(risk=riskobj,**riskfield_data)
         #Temp
         return riskobj
 
@@ -184,8 +184,8 @@ class RiskSerializer(serializers.ModelSerializer):
         risk_field_value = riskfield_data["risk_field_value"]
         print(risktypefield_qryobj.pk)            
         risk_type_field_id = risktypefield_qryobj.pk
-        qFilterSet = RiskTypeField.objects.filter(risktype__pk =risk_type_id,id=risk_type_field_id)
-        #qFilterSet = RiskTypeField.objects.filter(risktype__pk =1,id=risk_type_field_id)
+        qFilterSet = risktypefield.objects.filter(risktype__pk =risk_type_id,id=risk_type_field_id)
+        #qFilterSet = risktypefield.objects.filter(risktype__pk =1,id=risk_type_field_id)
         print('qFilterSet count()')
         print(qFilterSet.count())
         #risk_type_field_obj = qFilterSet.get(id=risk_type_field_id)    
@@ -199,27 +199,27 @@ class RiskSerializer(serializers.ModelSerializer):
                                             risk_field_value)
         else:
             riskfield_data = None
-            strErrorMessage =  "RiskTypeField id= " + risk_type_field_id + " is not found For RiskType=" + risk_type_id + ". Enter valid id for Risktype"
+            strErrorMessage =  "risktypefield id= " + risk_type_field_id + " is not found For risktype=" + risk_type_id + ". Enter valid id for Risktype"
         return  riskfield_data 
         
     def validate(self, attrs):    
             #fieldname_data = data['risk_type_field_name']
             strCombinedErrorMessage = None
-            print("I am calling Risk Validate")
+            print("I am calling risk Validate")
             risktype_qryobj = attrs['risktype']   
             print('Writing primary key of risktype_qryobj')
             print(risktype_qryobj.pk)
             risk_type_id = risktype_qryobj.pk
-            #risk_type_obj = RiskType.objects.get(pk=risk_type_id)
-            qRiskTypeFilterSet = RiskType.objects.filter(id=risk_type_id)
+            #risk_type_obj = risktype.objects.get(pk=risk_type_id)
+            qRiskTypeFilterSet = risktype.objects.filter(id=risk_type_id)
             if(qRiskTypeFilterSet.count() != 1):
-                strErrorMessage =  "RiskType id= " + risk_type_id + " is not found. Enter valid id for Risktype"
+                strErrorMessage =  "risktype id= " + risk_type_id + " is not found. Enter valid id for Risktype"
 
             risk_riskfields_data = attrs['risk_riskfields']
             print(risk_riskfields_data)
             
             strDuplicateRiskFields = None            
-            strDuplicateRiskFields = ValidationUtils.Find_Duplicates(risk_riskfields_data,'risktypefield','Risk',True)            
+            strDuplicateRiskFields = ValidationUtils.Find_Duplicates(risk_riskfields_data,'risktypefield','risk',True)            
             if strDuplicateRiskFields is None:            
                 return attrs
             else:

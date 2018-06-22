@@ -38,7 +38,7 @@ class ValidationUtils:
 
         # Check if 
         if(riskfield_data is None):
-            strErrorMessage =  "RiskField is not found. Post valid RiskField"
+            strErrorMessage =  "riskfield is not found. Post valid riskfield"
 
         if (riskfield_data.risk_type_field_enum and riskfield_data.risk_type_field_enum == "integer"):                    
             if (ValidationUtils.isanumber(riskfield_data.risk_field_value) == False):

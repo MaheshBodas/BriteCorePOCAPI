@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     # 'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
+    'riskapi',
     # Filtering related
     'rest_framework',
     'django_filters',

@@ -24,7 +24,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'u^t*4rejg!tzdzh(w5ljufz&@1l4u4#3o-g4=y9f$ke%+snn2#'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1', '.herokuapp.com']
 
@@ -48,7 +48,7 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'rest_auth.registration',
-    'riskapi.apps.RiskapiConfig',
+    'riskapi.apps.RiskapiConfig',    
 ]
 
 MIDDLEWARE = [
@@ -152,4 +152,17 @@ STATIC_URL = '/static/'
 #
 # https://devcenter.heroku.com/articles/django-app-configuration
 
-django_heroku.settings(locals())
+# django_heroku.settings(locals())
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'britecorepoc',
+        'USER': 'postgres',
+        'PASSWORD': 'Madhuri#1',
+        'HOST': 'localhost',
+        'PORT': '5433',
+    }
+}
+
+db_from_env = dj_database_url.config(conn_max_age=500)
+DATABASES['default'].update(db_from_env)

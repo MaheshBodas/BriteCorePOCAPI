@@ -26,7 +26,7 @@ SECRET_KEY = 'u^t*4rejg!tzdzh(w5ljufz&@1l4u4#3o-g4=y9f$ke%+snn2#'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost',127.0.0.1', '.herokuapp.com']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.herokuapp.com']
 
 
 # Application definition
@@ -67,7 +67,6 @@ MIDDLEWARE_CLASSES = MIDDLEWARE
 ROOT_URLCONF = 'BriteCorePOCAPI.urls'
 
 WSGI_APPLICATION = 'BriteCorePOCAPI.wsgi.application'
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/

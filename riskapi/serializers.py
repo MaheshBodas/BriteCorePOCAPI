@@ -1,12 +1,13 @@
+from django.contrib.auth.models import User
 from rest_framework import serializers,fields
-from .models import *
-from .utils import *
-from .validators import *
+from .models import risktype,risktypefield,risk,riskfield
+from .utils import RiskFieldData
+from .validators import ValidationUtils
 
-# Serializer type for user DRF authentication
+# Serializer type for User DRF authentication
 class UserSerializer(serializers.ModelSerializer):    
     class Meta:
-        model = user
+        model = User
         fields = ('password', 'username', 'email','is_staff', 'is_superuser', 'is_active', 'date_joined',)
         write_only_fields = ('password',)
         read_only_fields = ('is_staff', 'is_superuser', 'is_active', 'date_joined',)

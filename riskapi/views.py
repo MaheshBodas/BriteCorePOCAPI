@@ -1,5 +1,6 @@
 #from riskapi.models import risktype,risk
 #from riskapi.serializers import RiskTypeSerializer,RiskSerializer
+from django.contrib.auth.models import User
 from .models import *
 from .serializers import *
 from rest_framework import generics
@@ -7,14 +8,14 @@ from rest_framework import permissions
 from django_filters import rest_framework as filters
 
 class UserList(generics.ListCreateAPIView):
-    queryset = user.objects.all()
+    queryset = User.objects.all()
     filter_backends = (filters.DjangoFilterBackend,)
     filter_fields = ('username', 'email', 'is_staff',)
     serializer_class = UserSerializer
     permission_classes = (permissions.IsAuthenticated,)
 
 class UserDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = user.objects.all()
+    queryset = User.objects.all()
     filter_backends = (filters.DjangoFilterBackend,)
     filter_fields = ('username', 'email', 'is_staff',)
     serializer_class = UserSerializer
@@ -41,7 +42,7 @@ class RiskTypeList(generics.ListCreateAPIView):
     # http_method_names = ['get', 'post']
 
     def perform_create(self, serializer):
-        serializer.save(createdby=self.request.user)
+        serializer.save(createdby=self.request.User)
 
 class RiskTypeDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = risktype.objects.all()
@@ -58,7 +59,7 @@ class RiskList(generics.ListCreateAPIView):
     # http_method_names = ['get', 'post']
 
     def perform_create(self, serializer):
-        serializer.save(createdby=self.request.user)
+        serializer.save(createdby=self.request.User)
 
 class RiskDetail(generics.RetrieveUpdateDestroyAPIView):
     # risk = risk.objects.get(pk=pk)

@@ -1,5 +1,6 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
+# from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import User
  
 """class RiskFieldTypeEnum(ChoiceEnum):
 class RiskFieldTypeEnum(Enum):
@@ -10,11 +11,11 @@ class RiskFieldTypeEnum(Enum):
     currency = "currency"
  """
 # Create your models here.
-class user(AbstractUser):
-    None    
+# class user(AbstractUser):
+#    None    
 
 class risktype(models.Model):
-    createdby = models.ForeignKey(user, related_name='user_risktypes', on_delete=models.CASCADE,null=True, blank=True)
+    createdby = models.ForeignKey(User, related_name='user_risktypes', on_delete=models.CASCADE,null=True, blank=True)
     risk_type_name = models.CharField(max_length=100, unique=True,
             error_messages={
                 'unique': 'risk_type_name must be unique'
@@ -41,7 +42,7 @@ class risktypefield(models.Model):
     
 
 class risk(models.Model):
-    createdby = models.ForeignKey(user, related_name='user_risks', on_delete=models.CASCADE,null=True, blank=True)      
+    createdby = models.ForeignKey(User, related_name='user_risks', on_delete=models.CASCADE,null=True, blank=True)      
     risk_name = models.CharField(max_length=100, unique=True,
             error_messages={
                 'unique': 'risk_name must be unique'

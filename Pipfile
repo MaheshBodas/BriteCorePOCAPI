@@ -7,6 +7,10 @@ verify_ssl = true
 [packages]
 
 django = "*"
+djangorestframework = "*"
+django-allauth = "*"
+django-filter = "*"
+django-rest-auth = "*"
 gunicorn = "*"
 django-heroku = "*"
 

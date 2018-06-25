@@ -45,8 +45,8 @@ INSTALLED_APPS = [
     # Filtering related
     'rest_framework.authtoken',
     'rest_auth',
-    # 'allauth',
-    # 'allauth.account',
+    'allauth',
+    'allauth.account',
     'rest_auth.registration',
     'rest_framework',
     'riskapi.apps.RiskapiConfig',    

@@ -51,7 +51,8 @@ INSTALLED_APPS = [
     'allauth.account',
     'rest_auth.registration',
     'rest_framework',
-    'BriteCorePOCAPI.riskapi',    
+    'BriteCorePOCAPI.riskapi',
+    'riskapi.apps.RiskapiConfig',  
 ]
 
 MIDDLEWARE = [

@@ -49,7 +49,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'rest_auth.registration',
     'rest_framework',
-    'riskapi.apps.RiskapiConfig',    
+    'riskapi',    
 ]
 
 MIDDLEWARE = [

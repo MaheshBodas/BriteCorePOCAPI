@@ -2,21 +2,20 @@
   "name": "Start on Heroku: Python",
   "description": "BriteCorePOCAPI to create and view generic RiskTypes and Risk Instance for various insurances.",
   "image": "heroku/python",
-  "repository": "https://github.com/MaheshBodas/BriteCorePOCAPI",
-  "keywords": ["python", "django" ],
-  "addons": [ "heroku-postgresql" ],
+  "scripts": {
+    "postdeploy": "python manage.py migrate"
+  },
   "env": {
+    "ENVIRONMENT": "production",
     "SECRET_KEY": {
-      "description": "The secret key for the Django application.",
       "generator": "secret"
     }
-  },
-  "environments": {
-    "test": {
-      "scripts": {
-        "test-setup": "python manage.py collectstatic --noinput",
-        "test": "python manage.py test"
-      }
+ },
+  "repository": "https://github.com/MaheshBodas/BriteCorePOCAPI",  
+  "addons": [ "heroku-postgresql" ],
+  "buildpacks": [
+    {
+      "url": "heroku/python"
     }
-  }
+  ]  
 }

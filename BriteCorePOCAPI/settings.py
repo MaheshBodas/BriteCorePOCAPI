@@ -17,6 +17,7 @@ import dj_database_url
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+ENVIRONMENT = os.getenv('ENVIRONMENT', 'development')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
@@ -27,7 +28,8 @@ SECRET_KEY = 'u^t*4rejg!tzdzh(w5ljufz&@1l4u4#3o-g4=y9f$ke%+snn2#'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.herokuapp.com']
+# ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.herokuapp.com']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -102,10 +104,10 @@ SITE_ID = 1
 
 
 REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': [],
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.SessionAuthentication',        
-    ),
+    # 'DEFAULT_PERMISSION_CLASSES': [],
+    # 'DEFAULT_AUTHENTICATION_CLASSES': (
+    #     'rest_framework.authentication.SessionAuthentication',        
+    # ),
     'DEFAULT_FILTER_BACKENDS': (
         'django_filters.rest_framework.DjangoFilterBackend',
     )    
@@ -150,15 +152,28 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 #
-# https://devcenter.heroku.com/articles/django-app-configuration
+# Database
+# https://docs.djangoproject.com/en/1.11/ref/settings/#databases
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
+    'default':
+    dj_database_url.config(
+        default='sqlite:///{}'.format(os.path.join(BASE_DIR, 'db.sqlite3'))
+    )
 }
 
 # django_heroku.settings(locals())
 
-db_from_env = dj_database_url.config(conn_max_age=500)
-DATABASES['default'].update(db_from_env)
+# db_from_env = dj_database_url.config(conn_max_age=500)
+# DATABASES['default'].update(db_from_env)
+if ENVIRONMENT == 'production':
+    DEBUG = False
+    SECRET_KEY = os.getenv('SECRET_KEY')
+    SESSION_COOKIE_SECURE = True
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_SECONDS = 31536000
+    SECURE_REDIRECT_EXEMPT = []
+    SECURE_SSL_REDIRECT = True
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
